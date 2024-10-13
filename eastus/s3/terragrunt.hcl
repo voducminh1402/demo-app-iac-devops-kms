@@ -13,6 +13,6 @@ include "env" {
 }
 
 inputs = {
-  bucket_name = "test-bucket"
-  acl         = "private"
+    env         = include.env.locals.env
+    bucket_name = "test-bucket"
 }
