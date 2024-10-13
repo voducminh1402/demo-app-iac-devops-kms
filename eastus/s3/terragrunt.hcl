@@ -14,5 +14,5 @@ include "env" {
 
 inputs = {
     env         = include.env.locals.env
-    bucket_name = "test-bucket-dev-new"
+    bucket_name = "amz-bucket-minhvd-test"
 }
