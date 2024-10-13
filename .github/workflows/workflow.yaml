@@ -33,17 +33,21 @@ jobs:
           curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.50.0/terragrunt_linux_amd64 -o /usr/local/bin/terragrunt
           chmod +x /usr/local/bin/terragrunt
 
-      - name: Initialize with Terragrunt
-        run: terragrunt run-all init --terragrunt-working-dir=${{ github.event.inputs.service_path }}
+      - name: Initialize with Terragrunt (Including External Dependencies)
+        run: |
+          terragrunt run-all init --terragrunt-non-interactive --terragrunt-include-external-dependencies --terragrunt-working-dir=${{ github.event.inputs.service_path }}
 
-      - name: Plan with Terragrunt
+      - name: Plan with Terragrunt (Including External Dependencies)
         id: plan
-        run: terragrunt run-all plan --terragrunt-working-dir=${{ github.event.inputs.service_path }}
+        run: |
+          terragrunt run-all plan --terragrunt-non-interactive --terragrunt-include-external-dependencies --terragrunt-working-dir=${{ github.event.inputs.service_path }}
 
-      - name: Apply Resources with Terragrunt
+      - name: Apply Resources with Terragrunt (Including External Dependencies)
         if: ${{ github.event.inputs.action == 'apply' }}
-        run: terragrunt run-all apply -auto-approve --terragrunt-working-dir=${{ github.event.inputs.service_path }}
+        run: |
+          terragrunt run-all apply -auto-approve --terragrunt-non-interactive --terragrunt-include-external-dependencies --terragrunt-working-dir=${{ github.event.inputs.service_path }}
 
-      - name: Destroy Resources with Terragrunt
+      - name: Destroy Resources with Terragrunt (Including External Dependencies)
         if: ${{ github.event.inputs.action == 'destroy' }}
-        run: terragrunt run-all destroy -auto-approve --terragrunt-working-dir=${{ github.event.inputs.service_path }}
+        run: |
+          terragrunt run-all destroy -auto-approve --terragrunt-non-interactive --terragrunt-include-external-dependencies --terragrunt-working-dir=${{ github.event.inputs.service_path }}
