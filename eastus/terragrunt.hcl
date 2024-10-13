@@ -1,5 +1,5 @@
 remote_state {
-  backend = "local"  # Or switch to "s3" for production use
+  backend = "local"
   generate = {
     path      = "backend.tf"
     if_exists = "overwrite_terragrunt"
@@ -16,14 +16,9 @@ generate "provider" {
 
   contents = <<EOF
 provider "aws" {
-    region = "us-east-1"
-    access_key = var.aws_access_key
-    secret_key = var.aws_secret_key
+  region     = "us-east-1"
+  access_key = "${env.AWS_ACCESS_KEY_ID}"
+  secret_key = "${env.AWS_SECRET_ACCESS_KEY}"
 }
 EOF
-}
-
-inputs = {
-  aws_access_key = get_env("AWS_ACCESS_KEY_ID")
-  aws_secret_key = get_env("AWS_SECRET_ACCESS_KEY")
 }
