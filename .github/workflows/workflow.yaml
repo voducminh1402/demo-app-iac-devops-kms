@@ -6,7 +6,7 @@ on:
       service_path:
         description: "Demo app workflows for Terraform"
         required: true
-        default: "eastus/eks"
+        default: ""
       action:
         description: "Choose between apply or destroy"
         required: true
@@ -28,8 +28,8 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Initialize Terraform
-        run: terraform init
+      - name: Initialize Terraform with Plugin Upgrade
+        run: terraform init -upgrade
         working-directory: ${{ github.event.inputs.service_path }}
 
       - name: Terraform Plan
@@ -37,7 +37,7 @@ jobs:
         run: terraform plan -out=plan.out
         working-directory: ${{ github.event.inputs.service_path }}
 
-      - name: Apply or Destroy Terraform Resources
+      - name: Apply Terraform Resources
         if: ${{ github.event.inputs.action == 'apply' }}
         run: terraform apply -auto-approve plan.out
         working-directory: ${{ github.event.inputs.service_path }}
