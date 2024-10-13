@@ -1,4 +1,4 @@
-name: Terraform Workflow
+name: Terragrunt Workflow
 
 on:
   workflow_dispatch:
@@ -16,33 +16,34 @@ on:
           - destroy
 
 jobs:
-  terraform:
+  terragrunt:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
+      - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
 
-      - name: Initialize Terraform with Plugin Upgrade
-        run: terraform init -upgrade
-        working-directory: ${{ github.event.inputs.service_path }}
+      - name: Install Terragrunt
+        run: |
+          curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.50.0/terragrunt_linux_amd64 -o /usr/local/bin/terragrunt
+          chmod +x /usr/local/bin/terragrunt
 
-      - name: Terraform Plan
+      - name: Initialize with Terragrunt
+        run: terragrunt run-all init --terragrunt-working-dir=${{ github.event.inputs.service_path }}
+
+      - name: Plan with Terragrunt
         id: plan
-        run: terraform plan -out=plan.out
-        working-directory: ${{ github.event.inputs.service_path }}
+        run: terragrunt run-all plan --terragrunt-working-dir=${{ github.event.inputs.service_path }}
 
-      - name: Apply Terraform Resources
+      - name: Apply Resources with Terragrunt
         if: ${{ github.event.inputs.action == 'apply' }}
-        run: terraform apply -auto-approve plan.out
-        working-directory: ${{ github.event.inputs.service_path }}
+        run: terragrunt run-all apply -auto-approve --terragrunt-working-dir=${{ github.event.inputs.service_path }}
 
-      - name: Destroy Terraform Resources
+      - name: Destroy Resources with Terragrunt
         if: ${{ github.event.inputs.action == 'destroy' }}
-        run: terraform destroy -auto-approve
-        working-directory: ${{ github.event.inputs.service_path }}
+        run: terragrunt run-all destroy -auto-approve --terragrunt-working-dir=${{ github.event.inputs.service_path }}
