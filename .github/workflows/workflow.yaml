@@ -47,6 +47,14 @@ jobs:
         run: |
           terragrunt run-all plan --terragrunt-non-interactive --terragrunt-working-dir=${{ github.event.inputs.service_path }}
 
+      - name: Request manual approval before apply
+        if: ${{ github.event.inputs.action == 'apply' }}
+        run: |
+          echo "Terragrunt plan completed. Waiting for manual approval to proceed with apply."
+        timeout-minutes: 0
+        env:
+          CONTINUE_ON_ERROR: "true"
+
       - name: Apply Resources with Terragrunt (Including External Dependencies)
         if: ${{ github.event.inputs.action == 'apply' }}
         run: |
