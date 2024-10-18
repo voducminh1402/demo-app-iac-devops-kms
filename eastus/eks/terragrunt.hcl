@@ -34,7 +34,7 @@ inputs = {
 dependency "vpc" {
   config_path = "../vpc"
 
-  mock_outputs = {
-    private_subnet_ids = ["subnet-1234", "subnet-5678"]
+  outputs = {
+    private_subnet_ids = ["subnet-00b6f89c5e765f5e1", "subnet-07a8d5e26e3d62cc3"]
   }
 }
